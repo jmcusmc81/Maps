@@ -1,0 +1,60 @@
+Last login: Thu Oct 22 11:59:37 on ttys000
+Joshuas-MacBook-Pro:~ Josh$ ssh -p2222 jceres@sandbox.dev
+Welcome to Ubuntu 14.04.3 LTS (GNU/Linux 3.19.0-25-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+You have new mail.
+Last login: Thu Oct 22 12:05:29 2015 from 10.0.2.2
+jceres@sandbox:~$ nano my.sh
+jceres@sandbox:~$ cat my.sh
+#!/bin/bash
+# This is a basic bash cript.
+a=Hello
+b="Good Morning"
+c=16
+
+echo $a
+echo $b
+echo $c
+tosend=""
+for i in *.log; do
+    dir=$(echo $i | awk '{split($1,a,"_"); print a[1]}');
+    if [ ! -d $dir ]; then
+        mkdir $dir;
+    fi;
+    cp $i $dir;
+    tosend="$tosend\n$dir"
+done
+for i in $(echo -e $tosend | uniq);do
+    echo Compressing $i
+    tar -zcvf $i.tar.gz $i
+    scp $i.tar.gz user@server
+done
+jceres@sandbox:~$ crontab -e
+no crontab for jceres - using an empty one
+crontab: installing new crontab
+jceres@sandbox:~$ crontab -l
+# Edit this file to introduce tasks to be run by cron.
+# 
+# Each task to run has to be defined through a single line
+# indicating with different fields when the task will be run
+# and what command to run for the task
+# 
+# To define the time you can provide concrete values for
+# minute (m), hour (h), day of month (dom), month (mon),
+# and day of week (dow) or use '*' in these fields (for 'any').# 
+# Notice that tasks will be started based on the cron's system
+# daemon's notion of time and timezones.
+# 
+# Output of the crontab jobs (including errors) is sent through
+# email to the user the crontab file belongs to (unless redirected).
+# 
+# For example, you can run a backup of all your user accounts
+# at 5 a.m every week with:
+# 0 5 * * 1 tar -zcf /var/backups/home.tgz /home/
+# 
+# For more information see the manual pages of crontab(5) and cron(8)
+# 
+# m h  dom mon dow   command
+0 12,14,16 * * * /home/your_username/run-me.sh >/dev/null 2>&1
+jceres@sandbox:~$ 
